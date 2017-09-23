@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-
+use App\Article;
 class ArticlesController extends Controller
 {
     /**
@@ -16,8 +16,8 @@ class ArticlesController extends Controller
      */
     public function index()
     {
-        //
-        return view("articles.index");
+        $articles=Article::orderBy('created_at','desc')->get();
+        return view('articles.index',compact('articles'));
     }
 
     /**
@@ -38,7 +38,12 @@ class ArticlesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request,['title'=>'required|max:50']);
+        $article=Article::create(['title'=>$request->title,
+            'content'=>$request->content,
+            ]);
+        return redirect()->route('articles.index');
+        
     }
 
     /**
